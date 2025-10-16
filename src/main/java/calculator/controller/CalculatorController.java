@@ -14,7 +14,11 @@ public class CalculatorController {
      * View 및 덧셈 로직 호출
      */
     public void run() {
-        String input = inputView.getInput();
-        resultView.printResult(calculatorService.calculate(input));
+        try {
+            String input = inputView.getInput();
+            resultView.printResult(calculatorService.calculate(input));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 }
