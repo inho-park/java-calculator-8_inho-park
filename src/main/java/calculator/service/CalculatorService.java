@@ -19,7 +19,7 @@ public class CalculatorService {
      */
     public BigInteger calculate(String input) {
         // 문자열 분리
-        String [] strArr = separateInput(input);
+        String [] strArr = sliceInput(input);
         String customStr = strArr[0];
         String intStr = strArr[1];
         // 구분자는 Map으로 관리하는 것이 탐색에 더 빠를 것이라 생각해 Map으로 관리
@@ -34,12 +34,12 @@ public class CalculatorService {
      * @param input String
      * @return new String[2]
      */
-    private String [] separateInput(String input) {
+    private String [] sliceInput(String input) {
         if (input.isEmpty()) {
             throw new RuntimeException("분리대상 문자열 비어있음 : " + input);
         } else {
             // 첫 번째 숫자가 나오는 위치를 찾음
-            int index = findSeparateIndex(input);
+            int index = findSliceIndex(input);
 
             String customArr = input.substring(0, index);
             String intArr = input.substring(index);
@@ -53,7 +53,7 @@ public class CalculatorService {
      * @param input String
      * @return int index
      */
-    private int findSeparateIndex(String input) {
+    private int findSliceIndex(String input) {
         int index = -1;
         // 처음으로 나오는 숫자 인덱스 지정
         for (int i = 0; i < input.length(); i++) {
