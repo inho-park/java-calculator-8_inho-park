@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 
 public class CalculatorService {
-    private Calculator calculator = new Calculator();
 
     /**
      * 덧셈 로직 서비스 호출
@@ -25,8 +24,10 @@ public class CalculatorService {
         // 구분자는 Map으로 관리하는 것이 탐색에 더 빠를 것이라 생각해 Map으로 관리
         Map<String, Boolean> separatorList = getSeparator(customStr);
         // 숫자 문자열 배열 만들기
-        List<String> intArr = getIntArr(intStr, separatorList);
-        return new BigInteger("0");
+        List<String> intList = getIntArr(intStr, separatorList);
+        // 숫자 합산한 결과 반환하기
+        Calculator calculator = new Calculator();
+        return calculator.getSum(intList);
     }
 
     /**
