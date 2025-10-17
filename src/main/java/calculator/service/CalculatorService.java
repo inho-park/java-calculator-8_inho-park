@@ -42,10 +42,10 @@ public class CalculatorService {
             // 첫 번째 숫자가 나오는 위치를 찾음
             int index = findSliceIndex(input);
 
-            String customArr = input.substring(0, index);
-            String intArr = input.substring(index);
+            String customStr = input.substring(0, index);
+            String intStr = input.substring(index);
 
-            return new String[]{customArr, intArr};
+            return new String[]{customStr, intStr};
         }
     }
 
@@ -119,7 +119,7 @@ public class CalculatorService {
         if (intStr.isEmpty()) {
             throw new RuntimeException("합산할 숫자 문자열 생성을 위한 문자열 공백");
         } else {
-            List<String> intArr = new ArrayList<>();
+            List<String> intList = new ArrayList<>();
             String temp = "";
             boolean beforeState = false;
             for (int i = 0; i < intStr.length(); i++) {
@@ -129,15 +129,15 @@ public class CalculatorService {
                     beforeState = false;
                 } else if (separatorList.containsKey(String.valueOf(ch)) && !beforeState) {
                     beforeState = true;
-                    intArr.add(temp);
+                    intList.add(temp);
                     temp = "";
                 } else {
                     throw new RuntimeException("구분자 검증 오류 : " + intStr + ", 유효하지 않은 구분자 : " + String.valueOf(ch));
                 }
             }
             // 문자열 마지막에 구분자와 숫자 중 무엇이 나올지 알 수 없으므로 숫자가 남았을 경우 추가해주기
-            if (temp.matches("-?\\d+(\\.\\d+)?")) intArr.add(temp);
-            return intArr;
+            if (temp.matches("-?\\d+(\\.\\d+)?")) intList.add(temp);
+            return intList;
         }
     }
 }
