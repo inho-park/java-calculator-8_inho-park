@@ -5,8 +5,8 @@ import calculator.model.Calculator;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-// import java.util.List;
-// import java.util.ArrayList;
+import java.util.List;
+import java.util.ArrayList;
 
 
 public class CalculatorService {
@@ -24,8 +24,8 @@ public class CalculatorService {
         String intStr = strArr[1];
         // 구분자는 Map으로 관리하는 것이 탐색에 더 빠를 것이라 생각해 Map으로 관리
         Map<String, Boolean> separatorList = getSeparator(customStr);
-//        List<Integer> intArr = getIntArr(intStr);
-
+        // 숫자 문자열 배열 만들기
+        List<String> intArr = getIntArr(intStr, separatorList);
         return new BigInteger("0");
     }
 
@@ -109,4 +109,34 @@ public class CalculatorService {
         }
     }
 
+    /**
+     * input => 숫자 문자열 배열 만들기
+     * @param intStr String, Map<String, Boolean> separatorList
+     * @return List<String> intArr
+     */
+    private List<String> getIntArr(String intStr, Map<String, Boolean> separatorList) {
+        if (intStr.isEmpty()) {
+            throw new RuntimeException("합산할 숫자 문자열 생성을 위한 문자열 공백");
+        } else {
+            List<String> intArr = new ArrayList<>();
+            String temp = "";
+            boolean beforeState = false;
+            for (int i = 0; i < intStr.length(); i++) {
+                char ch = intStr.charAt(i);
+                if (Character.isDigit(ch)) {
+                    temp += String.valueOf(ch);
+                    beforeState = false;
+                } else if (separatorList.containsKey(String.valueOf(ch)) && !beforeState) {
+                    beforeState = true;
+                    intArr.add(temp);
+                    temp = "";
+                } else {
+                    throw new RuntimeException("구분자 검증 오류 : " + intStr + ", 유효하지 않은 구분자 : " + String.valueOf(ch));
+                }
+            }
+            // 문자열 마지막에 구분자와 숫자 중 무엇이 나올지 알 수 없으므로 숫자가 남았을 경우 추가해주기
+            if (temp.matches("-?\\d+(\\.\\d+)?")) intArr.add(temp);
+            return intArr;
+        }
+    }
 }
