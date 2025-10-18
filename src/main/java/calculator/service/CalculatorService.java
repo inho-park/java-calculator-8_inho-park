@@ -39,49 +39,31 @@ public class CalculatorService {
         if (input.isEmpty()) {
             throw new RuntimeException("분리대상 문자열 비어있음 : " + input);
         } else {
-            // 첫 번째 숫자가 나오는 위치를 찾음
-            int index = findSliceIndex(input);
-
-            String customStr = input.substring(0, index);
-            String intStr = input.substring(index);
-
-            return new String[]{customStr, intStr};
-        }
-    }
-
-    /**
-     * input => 문자열 분리할 인덱스 찾기
-     * @param input String
-     * @return int index
-     */
-    private int findSliceIndex(String input) {
-        int index = -1;
-        // 처음으로 나오는 숫자 인덱스 지정
-        for (int i = 0; i < input.length(); i++) {
-            if (Character.isDigit(input.charAt(i))) {
-                index = i;
-                break;
+            // 맨 앞이 // 로 시작하지 않으면 잘라내지 않고 그대로 반환
+            if (input.startsWith("//") && input.contains("\\n")) {
+                int index = input.indexOf("\\n");
+                String customStr = input.substring(2, index);
+                String intStr = input.substring(index + 2);
+                return new String[]{customStr, intStr};
+            } else {
+                // 위 조건이 해당되지 않을 경우 기본 구분자로만 덧셈 연산 활용
+                return new String[]{"", input};
             }
         }
-        if (index == -1) {
-            throw new RuntimeException("문자열에 숫자 미존재 : " + input);
-        }
-        return index;
     }
 
     /**
      * input => 커스텀 문자 등록
-     * @param customArr String
+     * @param customStr String
      * @return Map<String, Boolean> separatorList
      */
-    private Map<String, Boolean> getSeparator(String customArr) {
-        customArr = validCheckSeparator(customArr);
+    private Map<String, Boolean> getSeparator(String customStr) {
         Map<String, Boolean> separatorList = new HashMap<>();
         // 기본 구분자 등록
         separatorList.put(":", true);
         separatorList.put(",", true);
-        if (!customArr.isEmpty()) {
-            char [] chArr = customArr.toCharArray();
+        if (validCheckSeparator(customStr)) {
+            char [] chArr = customStr.toCharArray();
             // 커스텀 구분자 등록
             for (char c : chArr) {
                 separatorList.put(String.valueOf(c), true);
@@ -92,22 +74,12 @@ public class CalculatorService {
     }
 
     /**
-     * input => 커스텀 문자 유효성 검증 후 앞 뒤 자르기 ("//", "\n")
-     * @param customArr String
+     * input => 커스텀 구분자 문자열에서 숫자 유무 검증
+     * @param customStr String
      * @return Map<String, Boolean> separatorList
      */
-    private String validCheckSeparator(String customArr) {
-        if (customArr.isEmpty()) {
-            return customArr;
-        } else {
-            // 문자열 앞 뒤 검사 후 숫자 있는지 확인하기
-            if (customArr.startsWith("//") && customArr.endsWith("\\n") && !customArr.matches(".*\\d.*")) {
-                customArr = customArr.substring(2);
-                return customArr.substring(0, customArr.length() - 2);
-            } else {
-                throw new RuntimeException("커스텀 구분자 문자열 형식이 올바르지 않음 : " + customArr);
-            }
-        }
+    private Boolean validCheckSeparator(String customStr) {
+        return !customStr.isEmpty() && !customStr.matches(".*\\d.*");
     }
 
     /**
@@ -121,6 +93,7 @@ public class CalculatorService {
         } else {
             List<String> intList = new ArrayList<>();
             String temp = "";
+            // 이전에 구분자가 또 사용되었는지 확인하기 위한 플래그
             boolean beforeState = false;
             for (int i = 0; i < intStr.length(); i++) {
                 char ch = intStr.charAt(i);
