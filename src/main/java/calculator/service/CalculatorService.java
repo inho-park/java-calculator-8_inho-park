@@ -104,6 +104,8 @@ public class CalculatorService {
                     beforeState = true;
                     intList.add(temp);
                     temp = "";
+                } else if (ch == '-') {
+                    throw new IllegalArgumentException("연산 식에는 양수와 구분자만 필요 : " + intStr);
                 } else {
                     throw new RuntimeException("구분자 검증 오류 : " + intStr + ", 유효하지 않은 구분자 : " + String.valueOf(ch));
                 }

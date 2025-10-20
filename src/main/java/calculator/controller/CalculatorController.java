@@ -17,7 +17,9 @@ public class CalculatorController {
         try {
             String input = inputView.getInput();
             resultView.printResult(calculatorService.calculate(input));
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
