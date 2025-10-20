@@ -62,24 +62,19 @@ public class CalculatorService {
         // 기본 구분자 등록
         separatorList.put(":", true);
         separatorList.put(",", true);
-        if (validCheckSeparator(customStr)) {
-            char [] chArr = customStr.toCharArray();
+        if (customStr.isEmpty()) {
+            return separatorList;
+        } else if (!customStr.matches(".*[0-9-].*")) {
+            char[] chArr = customStr.toCharArray();
             // 커스텀 구분자 등록
             for (char c : chArr) {
                 separatorList.put(String.valueOf(c), true);
             }
+            return separatorList;
+        } else {
+            throw new RuntimeException("커스텀 구분자 점검 필요 : " + customStr);
         }
 
-        return separatorList;
-    }
-
-    /**
-     * input => 커스텀 구분자 문자열에서 숫자 유무 검증
-     * @param customStr String
-     * @return Map<String, Boolean> separatorList
-     */
-    private Boolean validCheckSeparator(String customStr) {
-        return !customStr.isEmpty() && !customStr.matches(".*\\d.*");
     }
 
     /**
